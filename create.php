@@ -2,23 +2,50 @@
 require 'config/db.php';
 include 'includes/header.php';
 
-if($_SERVER["REQUEST_METHOD"] === 'POST'){
-    
-    $nombre = $_POST["nombre"];
-    $precio = $_POST["precio"];
-    $descripcion = $_POST["descripcion"];
-    $stock = $_POST["stock"];
+if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
+  $nombre = $_POST["nombre"];
+  $precio = $_POST["precio"];
+  $descripcion = $_POST["descripcion"];
+  $stock = $_POST["stock"];
+
+
+
+  try {
     $stmt = $pdo->prepare("INSERT INTO productos (nombre, precio, descripcion, stock)VALUES(?,?,?,?)");
-    $stmt ->execute([$nombre, $precio, $descripcion, $stock]);
+    $stmt->execute([$nombre, $precio, $descripcion, $stock]);
+    
+    echo"
+    <script>
+  Swal.fire({
+    title: 'Producto Guardado',
+    text: 'Producto Registrado correctamente',
+    icon: 'success'
+  }).then(()=>window.location='index.php');
+</script>
+    
+    ";
+  } catch (PDOException $e) {
 
-    header("Location:index.php");
-    exit;
-    //echo
-    //var_dump
-    //die
-    //dd
-    //var_dump($nombre, $precio, $descripcion, $stock);
+    $error = addslashes($e->getMessage());
+    echo"
+    <script>
+  Swal.fire({
+    title: 'Error al guardar',
+    text: '$error',
+    icon: 'error'
+  });
+</script>
+    ";
+  }
+
+  //header("Location:index.php");
+  exit;
+  //echo
+  //var_dump
+  //die
+  //dd
+  //var_dump($nombre, $precio, $descripcion, $stock);
 }
 
 ?>
@@ -40,7 +67,7 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
     <label for="stock" class="form-label">Stock</label>
     <input type="text" class="form-control" id="stock" name="stock">
   </div>
-  
+
   <button type="submit" class="btn btn-outline-dark">Guardar</button>
 </form>
 

@@ -24,24 +24,32 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </tr>
   </thead>
   <tbody>
-    <?php foreach($productos as $item): ?>
-    <tr>
-      <th scope="row"><?= $item["id_producto"] ?></th>
-      <td><?= $item["nombre"]?></td>
-      <td><?= $item["descripcion"] ?></td>
-      <td><?= $item["precio"]?></td>
-      <td><?= $item["stock"]?></td>
-      <td>
-        <div style="display: flex;">
-          <a href="delete.php?id_producto=<?= $item["id_producto"] ?>" type="button" class="mx-2 btn btn-outline-danger">🗑️</a>
-          <a href="update.php" type="button" class="mx-2 btn btn-outline-info">✏️</a>
-        </div>
-        <a href=""></a>
-      </td>
-    </tr>
+    <?php foreach ($productos as $item): ?>
+      <tr>
+        <th scope="row"><?= $item["id_producto"] ?></th>
+        <td><?= $item["nombre"] ?></td>
+        <td><?= $item["descripcion"] ?></td>
+        <td><?= $item["precio"] ?></td>
+        <td><?= $item["stock"] ?></td>
+        <td>
+          <div style="display: flex;">
+            <a href="delete.php?id_producto=<?= $item["id_producto"] ?>" type="button" class="mx-2 btn btn-outline-danger">🗑️</a>
+            <a href="update.php?id_producto=<?= $item["id_producto"] ?>" type="button" class="mx-2 btn btn-outline-info">✏️</a>
+          </div>
+          <a href=""></a>
+        </td>
+      </tr>
     <?php endforeach; ?>
   </tbody>
 </table>
+
+<!-- <script>
+  Swal.fire({
+    title: "Producto Guardado",
+    text: "Producto Registrado correctamente",
+    icon: "success"
+  }).then(()=>window.location='index.php');
+</script> -->
 
 <?php
 include 'includes/footer.php'
