@@ -1,12 +1,15 @@
 <?php
+session_start();
 require 'config/db.php';
 include 'includes/header.php';
 require 'includes/funciones.php';
+
 
 $marcas = obtenerMarca($pdo);
 $categorias = obtenerCategoria($pdo);
 
 //var_dump($marcas, $categorias);
+//var_dump($_SESSION);
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
@@ -16,12 +19,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
   $stock = $_POST["stock"];
   $marca = $_POST["marca"];
   $categoria = $_POST["categoria"];
+  $creado_por = $_SESSION['id_usuario'] ?? null;
 
 
 
   try {
-    $stmt = $pdo->prepare("INSERT INTO productos (nombre, precio, descripcion, stock, id_marca, id_categoria)VALUES(?,?,?,?,?,?)");
-    $stmt->execute([$nombre, $precio, $descripcion, $stock, $marca, $categoria]);
+    $stmt = $pdo->prepare("INSERT INTO productos (nombre, precio, descripcion, stock, id_marca, id_categoria, creado_por)VALUES(?,?,?,?,?,?,?)");
+    $stmt->execute([$nombre, $precio, $descripcion, $stock, $marca, $categoria,$creado_por]);
 
     echo "
     <script>
@@ -48,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
   }
 
   //header("Location:index.php");
-  exit;
+  //exit;
   //echo
   //var_dump
   //die

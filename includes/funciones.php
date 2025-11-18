@@ -10,4 +10,9 @@ function obtenerMarca($pdo){
     return $stmt->fetchALL(PDO::FETCH_ASSOC);
 }
 
+function obtenetIdUsuario($pdo){
+    $stmt = $pdo->query("SELECT * FROM USUARIOS");
+    return $stmt->fetchALL(PDO::FETCH_ASSOC);
+}
+
 ?>
