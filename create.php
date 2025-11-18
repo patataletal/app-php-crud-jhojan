@@ -1,6 +1,12 @@
 <?php
 require 'config/db.php';
 include 'includes/header.php';
+require 'includes/funciones.php';
+
+$marcas = obtenerMarca($pdo);
+$categorias = obtenerCategoria($pdo);
+
+//var_dump($marcas, $categorias);
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
@@ -8,14 +14,16 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
   $precio = $_POST["precio"];
   $descripcion = $_POST["descripcion"];
   $stock = $_POST["stock"];
+  $marca = $_POST["marca"];
+  $categoria = $_POST["categoria"];
 
 
 
   try {
-    $stmt = $pdo->prepare("INSERT INTO productos (nombre, precio, descripcion, stock)VALUES(?,?,?,?)");
-    $stmt->execute([$nombre, $precio, $descripcion, $stock]);
-    
-    echo"
+    $stmt = $pdo->prepare("INSERT INTO productos (nombre, precio, descripcion, stock, id_marca, id_categoria)VALUES(?,?,?,?,?,?)");
+    $stmt->execute([$nombre, $precio, $descripcion, $stock, $marca, $categoria]);
+
+    echo "
     <script>
   Swal.fire({
     title: 'Producto Guardado',
@@ -28,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
   } catch (PDOException $e) {
 
     $error = addslashes($e->getMessage());
-    echo"
+    echo "
     <script>
   Swal.fire({
     title: 'Error al guardar',
@@ -60,12 +68,33 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
     <input type="text" class="form-control" id="precio" name="precio">
   </div>
   <div class="mb-3">
-    <label for="decripcion" class="form-label">Descripción</label>
+    <label for="descripcion" class="form-label">Descripción</label>
     <input type="text" class="form-control" id="descripcion" name="descripcion">
   </div>
   <div class="mb-3">
     <label for="stock" class="form-label">Stock</label>
     <input type="text" class="form-control" id="stock" name="stock">
+  </div>
+  
+
+  <div class="mb-3">
+    <label for="marca" class="form-label">Marca</label>
+    <select class="form-select" aria-label="Default select example" name="marca">
+      <option selected>Seleccione una Marca</option>
+      <?php foreach ($marcas as $item): ?>
+        <option value="<?= $item['id_marca'] ?>"><?= $item['nombre'] ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="categoria" class="form-label">Categoria</label>
+    <select class="form-select" aria-label="Default select example" name="categoria">
+      <option selected>Seleccionar Categoria</option>
+      <?php foreach ($categorias as $item): ?>
+        <option value="<?= $item['id_categoria'] ?>"><?= $item['nombre'] ?></option>
+      <?php endforeach; ?>
+    </select>
   </div>
 
   <button type="submit" class="btn btn-outline-dark">Guardar</button>

@@ -1,6 +1,10 @@
 <?php
 require 'config/db.php';
+require 'includes/funciones.php';
 include 'includes/header.php';
+
+$marcas = obtenerMarca($pdo);
+$categorias = obtenerCategoria($pdo);
 
 $id_producto = $_GET['id_producto'];
 $stmt = $pdo->prepare("select * from productos where id_producto = ?");
@@ -18,12 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
     $precio = $_POST["precio"];
     $descripcion = $_POST["descripcion"];
     $stock = $_POST["stock"];
-
+    $marca = $_POST["marca"];
+    $categoria = $_POST["categoria"];
 
 
     try {
-        $stmt = $pdo->prepare("UPDATE productos  SET nombre = ?, precio = ?, descripcion = ?, stock = ? WHERE id_producto = ?");
-        $stmt->execute([$nombre, $precio, $descripcion, $stock, $producto['id_producto']]);
+        $stmt = $pdo->prepare("UPDATE productos  SET nombre = ?, precio = ?, descripcion = ?, stock = ?, id_categoria = ?, id_marca = ? WHERE id_producto = ?");
+        $stmt->execute([$nombre, $precio, $descripcion, $stock, $categoria, $marca, $producto['id_producto']]);
 
         echo "
     <script>
@@ -70,13 +75,33 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
         <input type="text" class="form-control" id="precio" name="precio" value="<?= $producto['precio'] ?>">
     </div>
     <div class="mb-3">
-        <label for="decripcion" class="form-label">Descripción</label>
+        <label for="descripcion" class="form-label">Descripción</label>
         <input type="text" class="form-control" id="descripcion" name="descripcion" value="<?= $producto['descripcion'] ?>">
     </div>
     <div class="mb-3">
         <label for="stock" class="form-label">Stock</label>
         <input type="text" class="form-control" id="stock" name="stock" value="<?= $producto['stock'] ?>">
     </div>
+
+    <div class="mb-3">
+    <label for="marca" class="form-label">Marca</label>
+    <select class="form-select" aria-label="Default select example" name="marca">
+      <option selected>Seleccione una Marca</option>
+      <?php foreach ($marcas as $item): ?>
+        <option value="<?= $item['id_marca'] ?>"><?= $item['nombre'] ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="categoria" class="form-label">Categoria</label>
+    <select class="form-select" aria-label="Default select example" name="categoria">
+      <option selected>Seleccionar Categoria</option>
+      <?php foreach ($categorias as $item): ?>
+        <option value="<?= $item['id_categoria'] ?>"><?= $item['nombre'] ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
 
     <button type="submit" class="btn btn-outline-dark">Actualizar </button>
 </form>
